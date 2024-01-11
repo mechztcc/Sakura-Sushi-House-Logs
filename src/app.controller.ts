@@ -1,12 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller } from '@nestjs/common';
+import { EventPattern } from '@nestjs/microservices';
+import { PrismaService } from './shared/prisma/services/prisma.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @EventPattern('product_created')
+  async handleUserCreated({ content }: Record<string, unknown>) {
+    const data = String(content);
+    await this.prisma.log.create({ data: { content: data } });
   }
 }

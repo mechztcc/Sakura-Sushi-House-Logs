@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    entrypoint: ./.docker/entrypoint.sh
+    volumes:
+      - .:/home/node/app
+    network_mode: 'host'
+
+  db:
+    image: postgres
+    container_name: pg-sushi-logs
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${DATABASE}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - '${DB_PORT}:5432'
+    volumes:
+      - ./.docker/dbdata:/data/db
+      - ./.docker/postgres:/docker-entrypoint-initdb.d
