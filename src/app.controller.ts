@@ -7,8 +7,16 @@ export class AppController {
   constructor(private readonly prisma: PrismaService) {}
 
   @EventPattern('product_created')
-  async handleUserCreated({ content }: Record<string, unknown>) {
+  async handleProductCreated({ content }: Record<string, unknown>) {
     const data = String(content);
     await this.prisma.log.create({ data: { content: data } });
+    console.log(data);
+  }
+
+  @EventPattern('product_updated')
+  async handleProductUpdated({ content }: Record<string, unknown>) {
+    const data = String(content);
+    await this.prisma.log.create({ data: { content: data } });
+    console.log(data);
   }
 }
